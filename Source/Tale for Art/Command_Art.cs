@@ -156,8 +156,7 @@ namespace Tale_for_Art
         public static IEnumerable<Pawn> GetPawns(this Tale tale) =>
             tale.GetType()
                 .GetFields()
-                .Where(info => info.FieldType == typeof(TaleData_Pawn))
-                .Where(info => info.GetValue(tale) != null)
+                .Where(info => (info.GetValue(tale) as TaleData_Pawn)?.pawn.Name != null)
                 .Select(info => (info.GetValue(tale) as TaleData_Pawn).pawn);
     }
 
