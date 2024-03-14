@@ -23,9 +23,28 @@ namespace Tale_for_Art
 
     public class Dialog_Rename : Window
     {
+#if v1_4
+        protected Dialog_Rename()
+            : base()
+#else
+        protected Dialog_Rename()
+            : base(null)
+#endif
+        {
+            doCloseX = true;
+            forcePause = true;
+            closeOnAccept = false;
+            closeOnClickedOutside = true;
+            absorbInputAroundWindow = true;
+        }
+
         protected virtual void SetName(string name) { }
 
+        public override Vector2 InitialSize => new Vector2(280f, 175f);
+
         protected virtual AcceptanceReport NameIsValid(string name) => true;
+
+        public virtual string Label => "Rename".Translate();
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -39,7 +58,7 @@ namespace Tale_for_Art
             Rect rect = new Rect(inRect);
             Text.Font = GameFont.Medium;
             rect.height = Text.LineHeight + 10f;
-            Widgets.Label(rect, "Rename".Translate());
+            Widgets.Label(rect, Label);
             Text.Font = GameFont.Small;
             GUI.SetNextControlName("RenameField");
             string text = Widgets.TextField(new Rect(0f, rect.height, inRect.width, 35f), curName);
@@ -68,6 +87,7 @@ namespace Tale_for_Art
                 }
                 else
                 {
+                    SetName(curName);
                     Find.WindowStack.TryRemove(this, true);
                 }
             }

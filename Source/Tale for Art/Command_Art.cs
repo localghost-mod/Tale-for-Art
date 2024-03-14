@@ -106,6 +106,8 @@ namespace Tale_for_Art
     {
         protected override void SetName(string name) => Command_Art.seed = Int32.Parse(name);
 
+        public override string Label => "Tale_for_Art.Seed".Translate(Command_Art.seed != -1 ? Command_Art.seed.ToString() : "Random".Translate().ToString());
+
         protected override AcceptanceReport NameIsValid(string name)
         {
             if (Int32.TryParse(name, out int value))
