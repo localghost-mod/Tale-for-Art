@@ -15,18 +15,9 @@ namespace Tale_for_Art
         {
             compArt.TaleRef?.ReferenceDestroyed();
 
-            var seedinfo = typeof(TaleReference).GetField(
-                "seed",
-                BindingFlags.Instance | BindingFlags.NonPublic
-            );
-            var talerefinfo = typeof(CompArt).GetField(
-                "taleRef",
-                BindingFlags.Instance | BindingFlags.NonPublic
-            );
-            var titleinfo = typeof(CompArt).GetField(
-                "titleInt",
-                BindingFlags.Instance | BindingFlags.NonPublic
-            );
+            var seedinfo = typeof(TaleReference).GetField("seed", BindingFlags.Instance | BindingFlags.NonPublic);
+            var talerefinfo = typeof(CompArt).GetField("taleRef", BindingFlags.Instance | BindingFlags.NonPublic);
+            var titleinfo = typeof(CompArt).GetField("titleInt", BindingFlags.Instance | BindingFlags.NonPublic);
 
             Tale taleForArt = tale;
             if (tale == null)
@@ -37,13 +28,7 @@ namespace Tale_for_Art
                 seedinfo.SetValue(taleref, seed);
 
             talerefinfo.SetValue(compArt, taleref);
-            titleinfo.SetValue(
-                compArt,
-                (TaggedString)
-                    GenText.CapitalizeAsTitle(
-                        taleref.GenerateText(TextGenerationPurpose.ArtName, compArt.Props.nameMaker)
-                    )
-            );
+            titleinfo.SetValue(compArt, (TaggedString)GenText.CapitalizeAsTitle(taleref.GenerateText(TextGenerationPurpose.ArtName, compArt.Props.nameMaker)));
 
             taleForArt.Notify_NewlyUsed();
         }
@@ -58,19 +43,8 @@ namespace Tale_for_Art
                         Find.WindowStack.Add(
                             new FloatMenu(
                                 TaleDefs
-                                    .Select(
-                                        taleDef =>
-                                            new FloatMenuOption(
-                                                taleDef.label,
-                                                () => Command_Art.taleDef = taleDef
-                                            )
-                                    )
-                                    .Append(
-                                        new FloatMenuOption(
-                                            "Random".Translate(),
-                                            () => taleDef = null
-                                        )
-                                    )
+                                    .Select(taleDef => new FloatMenuOption(taleDef.label, () => Command_Art.taleDef = taleDef))
+                                    .Append(new FloatMenuOption("Random".Translate(), () => taleDef = null))
                                     .ToList()
                             )
                         )
@@ -81,16 +55,8 @@ namespace Tale_for_Art
                         Find.WindowStack.Add(
                             new FloatMenu(
                                 Pawns
-                                    .Select(
-                                        pawn =>
-                                            new FloatMenuOption(
-                                                pawn.Name.ToStringFull,
-                                                () => Command_Art.pawn = pawn
-                                            )
-                                    )
-                                    .Append(
-                                        new FloatMenuOption("Random".Translate(), () => pawn = null)
-                                    )
+                                    .Select(pawn => new FloatMenuOption(pawn.Name.ToStringFull, () => Command_Art.pawn = pawn))
+                                    .Append(new FloatMenuOption("Random".Translate(), () => pawn = null))
                                     .ToList()
                             )
                         )
@@ -101,49 +67,28 @@ namespace Tale_for_Art
                         Find.WindowStack.Add(
                             new FloatMenu(
                                 Tales
-                                    .Select(
-                                        tale =>
-                                            new FloatMenuOption(
-                                                tale.ToString(),
-                                                () => Command_Art.tale = tale
-                                            )
-                                    )
-                                    .Append(
-                                        new FloatMenuOption("Random".Translate(), () => tale = null)
-                                    )
+                                    .Select(tale => new FloatMenuOption(tale.ToString(), () => Command_Art.tale = tale))
+                                    .Append(new FloatMenuOption("Random".Translate(), () => tale = null))
                                     .ToList()
                             )
                         )
                 );
                 yield return new FloatMenuOption(
-                    "Tale_for_Art.Seed".Translate(
-                        seed != -1 ? seed.ToString() : "Random".Translate().ToString()
-                    ),
+                    "Tale_for_Art.Seed".Translate(seed != -1 ? seed.ToString() : "Random".Translate().ToString()),
                     () => Find.WindowStack.Add(new Dialog_Seed())
                 );
             }
         }
         public static IEnumerable<TaleDef> TaleDefs =>
-            Find.TaleManager.AllTalesListForReading.Where(
-                tale => tale.def.usableForArt && (pawn == null || tale.Concerns(pawn))
-            )
-                .Select(tale => tale.def)
-                .Distinct();
+            Find.TaleManager.AllTalesListForReading.Where(tale => tale.def.usableForArt && (pawn == null || tale.Concerns(pawn))).Select(tale => tale.def).Distinct();
         public static IEnumerable<Pawn> Pawns =>
-            Find.TaleManager.AllTalesListForReading.Where(
-                tale => tale.def.usableForArt && (taleDef == null || tale.def == taleDef)
-            )
+            Find.TaleManager.AllTalesListForReading.Where(tale => tale.def.usableForArt && (taleDef == null || tale.def == taleDef))
                 .Select(tale => tale.GetPawns())
                 .SelectMany(x => x)
                 .Distinct();
 
         public static IEnumerable<Tale> Tales =>
-            Find.TaleManager.AllTalesListForReading.Where(
-                tale =>
-                    tale.def.usableForArt
-                    && (taleDef == null || tale.def == taleDef)
-                    && (pawn == null || tale.Concerns(pawn))
-            );
+            Find.TaleManager.AllTalesListForReading.Where(tale => tale.def.usableForArt && (taleDef == null || tale.def == taleDef) && (pawn == null || tale.Concerns(pawn)));
 
         public static TaleDef taleDef;
         public static Pawn pawn;
@@ -154,10 +99,7 @@ namespace Tale_for_Art
     public static class TaleExtension
     {
         public static IEnumerable<Pawn> GetPawns(this Tale tale) =>
-            tale.GetType()
-                .GetFields()
-                .Where(info => (info.GetValue(tale) as TaleData_Pawn)?.pawn.Name != null)
-                .Select(info => (info.GetValue(tale) as TaleData_Pawn).pawn);
+            tale.GetType().GetFields().Where(info => (info.GetValue(tale) as TaleData_Pawn)?.pawn.Name != null).Select(info => (info.GetValue(tale) as TaleData_Pawn).pawn);
     }
 
     public class Dialog_Seed : Dialog_Rename

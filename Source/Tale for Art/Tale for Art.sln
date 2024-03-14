@@ -3,23 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tale for Art", "Tale for Art.csproj", "{E949A0F5-B409-4381-AD2F-D872F3ECC10F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tale for Art", "Tale for Art.csproj", "{9D676035-200E-4EF6-864A-9D6707DF234E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		1.4|Any CPU = 1.4|Any CPU
+		1.5|Any CPU = 1.5|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E949A0F5-B409-4381-AD2F-D872F3ECC10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E949A0F5-B409-4381-AD2F-D872F3ECC10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E949A0F5-B409-4381-AD2F-D872F3ECC10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E949A0F5-B409-4381-AD2F-D872F3ECC10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D676035-200E-4EF6-864A-9D6707DF234E}.1.4|Any CPU.ActiveCfg = 1.4|Any CPU
+		{9D676035-200E-4EF6-864A-9D6707DF234E}.1.4|Any CPU.Build.0 = 1.4|Any CPU
+		{9D676035-200E-4EF6-864A-9D6707DF234E}.1.5|Any CPU.ActiveCfg = 1.5|Any CPU
+		{9D676035-200E-4EF6-864A-9D6707DF234E}.1.5|Any CPU.Build.0 = 1.5|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B7682866-F91F-4FAF-8AE2-395A67359E4E}
+		SolutionGuid = {195286D1-891E-40BE-8C3C-3A43AE8A538A}
 	EndGlobalSection
 EndGlobal

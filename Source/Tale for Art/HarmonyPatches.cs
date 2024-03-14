@@ -5,17 +5,38 @@ using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Grammar;
+using static HarmonyLib.AccessTools;
 
 namespace Tale_for_Art
 {
     [StaticConstructorOnStartup]
     public static class Startup
     {
-        static Startup() => new Harmony("localghost.taleforart").PatchAll();
+        static Startup()
+        {
+            var harmony = new Harmony("localghost.taleforart");
+            harmony.Patch(Method("Verse.ThingComp:CompGetGizmosExtra"), postfix: new HarmonyMethod(Method("Tale_for_Art.HarmonyPatches:Postfix")));
+            harmony.Patch(Method(
+#if v1_4
+                    "RimWorld.TaleTextGenerator:GenerateTextFromTale"
+#else
+                    "RimWorld.TaleTextGenerator:GenerateTextFromTale",
+                    new System.Type[]
+                    {
+                        typeof(TextGenerationPurpose),
+                        typeof(Tale),
+                        typeof(int),
+                        typeof(List<RulePackDef>),
+                        typeof(List<Rule>),
+                        typeof(Dictionary<string, string>)
+                    }
+#endif
+                ), transpiler: new HarmonyMethod(Method("Tale_for_Art.HarmonyPatches:Transpiler")));
+        }
     }
 
-    [HarmonyPatch(typeof(ThingComp), nameof(ThingComp.CompGetGizmosExtra))]
-    public class CompGetGizmosExtraPatch
+    public static class HarmonyPatches
     {
         static void Postfix(ThingComp __instance, ref IEnumerable<Gizmo> __result)
         {
@@ -40,25 +61,15 @@ namespace Tale_for_Art
             command_title.action = () => command_title.Rename(compArt);
             __result = __result.Concat(command_art).Concat(command_title);
         }
-    }
 
-    [HarmonyPatch(typeof(TaleTextGenerator), nameof(TaleTextGenerator.GenerateTextFromTale))]
-    public class GenerateTextFromTalePatch
-    {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             foreach (var instruction in instructions)
             {
                 if (instruction.opcode == OpCodes.Ldc_R4)
                 {
-                    yield return new CodeInstruction(
-                        OpCodes.Ldsfld,
-                        typeof(Tale_for_Art_Mod).GetField(nameof(Tale_for_Art_Mod.settings))
-                    );
-                    yield return new CodeInstruction(
-                        OpCodes.Ldfld,
-                        typeof(Settings).GetField(nameof(Settings.TalelessChanceWithTales))
-                    );
+                    yield return new CodeInstruction(OpCodes.Ldsfld, typeof(Tale_for_Art_Mod).GetField(nameof(Tale_for_Art_Mod.settings)));
+                    yield return new CodeInstruction(OpCodes.Ldfld, typeof(Settings).GetField(nameof(Settings.TalelessChanceWithTales)));
                 }
                 else
                     yield return instruction;
