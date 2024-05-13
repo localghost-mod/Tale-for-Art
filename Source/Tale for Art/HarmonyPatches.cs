@@ -6,6 +6,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Grammar;
+using Verse.Sound;
 using static HarmonyLib.AccessTools;
 
 namespace Tale_for_Art
@@ -33,6 +34,7 @@ namespace Tale_for_Art
                     }
 #endif
                 ), transpiler: new HarmonyMethod(Method("Tale_for_Art.HarmonyPatches:Transpiler")));
+            harmony.Patch(Method("RimWorld.MinifiedThing:Destroy"), prefix: new HarmonyMethod(Method("Tale_for_Art.HarmonyPatches:DestroyPostfix")));
         }
     }
 
@@ -74,6 +76,11 @@ namespace Tale_for_Art
                 else
                     yield return instruction;
             }
+        }
+        static void DestroyPostfix(MinifiedThing __instance, DestroyMode mode)
+        {
+            if (__instance.InnerThing != null && !(__instance.InnerThing is MonumentMarker))
+                __instance.InnerThing.Destroy(mode);
         }
     }
 }
